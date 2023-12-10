@@ -29,7 +29,9 @@ Quill.register(QImageBlot);
 
 
 const form = document.querySelector('#customForm');
-const imageInput = document.querySelector('#url') 
+const imageFile = document.querySelector('#imageFile');
+const imageURL = document.querySelector('#url');
+const inputText = document.querySelector('#text'); 
 const inputButton = document.querySelector('#inputButton');
 const toolbar = quill.getModule('toolbar');
 const button = document.createElement('button');
@@ -42,13 +44,13 @@ editor.addEventListener('drop', (e) => {
     const reader =  new FileReader();
     reader.onload = () => {
         // const convertedImg = e.target.result;
-        document.querySelector('#url').files = e.dataTransfer.files;
+        document.querySelector('#imageFile').files = e.dataTransfer.files;
         form.style.display = 'block';
     }
     reader.readAsDataURL(file);
     
 
-})
+});
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -59,23 +61,47 @@ button.onclick = () => {
     form.style.display = 'block';
 }
 
-toolbar.addHandler('qImage', (imageFile = '', text = '') => {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-        const convertedImg = e.target.result;
-        quill.insertEmbed(quill.getSelection(true).index + 1, 'qImage', { image: convertedImg, text: text });
+toolbar.addHandler('qImage', (file = '', text = '', imageLink = '') => {
+    if(file){
+        console.log(`file is ${file}`)
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            const convertedImg = e.target.result;
+            quill.insertEmbed(quill.getSelection(true).index + 1, 'qImage', { image: convertedImg, text: text });
+        }
+        reader.readAsDataURL(file);
+    }else if(imageLink){
+        quill.insertEmbed(quill.getSelection(true).index + 1, 'qImage', { image: imageLink, text: text });
     }
-    reader.readAsDataURL(imageFile);
 
   
 });
 inputButton.onclick = () => {
-    if(document.querySelector('#url').files[0] && document.querySelector('#text').value){
-        toolbar.handlers.qImage(document.querySelector('#url').files[0], text = document.querySelector('#text').value)
+    if(imageFile.files[0] && inputText.value){
+        imageURL.value = '';
+        toolbar.handlers.qImage(file = imageFile.files[0], text = inputText.value, imageLink = '');
         form.style.display = 'none';
         document.querySelectorAll('input').forEach(input => {
             input.value = '';
         });
-}
+    }else if(imageURL && inputText.value){
+        imageFile.value = '';
+        toolbar.handlers.qImage(file = '', text = inputText.value, imageLink = imageURL.value);
+        form.style.display = 'none';
+        document.querySelectorAll('input').forEach(input => {
+            input.value = '';
+        });
+    }
 };
 document.getElementById('toolbar').appendChild(button);
+
+
+// var delta = [{
+//     "insert": {
+//         "qImage": {
+//             "image": "https://picsum.photos/200/300",
+//             "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+//         }
+//     }
+// }];
+// editor.updateContents(delta)
