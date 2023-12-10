@@ -1,3 +1,4 @@
+//Quill functionality
 var quill = new Quill('#editor', {
     theme: 'snow',
     modules: {
@@ -26,35 +27,55 @@ QImageBlot.blotName = 'qImage';
 QImageBlot.tagName = 'q-img-text';
 Quill.register(QImageBlot);
 
+
 const form = document.querySelector('#customForm');
+const imageInput = document.querySelector('#url') 
+const inputButton = document.querySelector('#inputButton');
+const toolbar = quill.getModule('toolbar');
+const button = document.createElement('button');
+const editor = document.querySelector('#editor');
+
+editor.addEventListener('dragover', (e) => {e.preventDefault()});
+editor.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    const reader =  new FileReader();
+    reader.onload = () => {
+        // const convertedImg = e.target.result;
+        document.querySelector('#url').files = e.dataTransfer.files;
+        form.style.display = 'block';
+    }
+    reader.readAsDataURL(file);
+    
+
+})
+
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 });
 
-const inputButton = document.querySelector('#inputButton');
-const toolbar = quill.getModule('toolbar');
+button.innerHTML = 'Add Image&Text';
+button.onclick = () => {
+    form.style.display = 'block';
+}
 
-toolbar.addHandler('qImage', () => {
-    let imageFile = document.querySelector('#url').files[0];
+toolbar.addHandler('qImage', (imageFile = '', text = '') => {
     let reader = new FileReader();
     reader.onload = (e) => {
         const convertedImg = e.target.result;
         quill.insertEmbed(quill.getSelection(true).index + 1, 'qImage', { image: convertedImg, text: text });
     }
-    reader.readAsDataURL(imageFile)
-    let text = document.querySelector('#text').value;   
-});
+    reader.readAsDataURL(imageFile);
 
-const button = document.createElement('button');
-button.innerHTML = 'Add Image + Text';
-button.onclick = () => {
-    form.style.display = 'block';
-}
+  
+});
 inputButton.onclick = () => {
-    toolbar.handlers.qImage()
-    form.style.display = 'none';
-    document.querySelectorAll('input').forEach(input => {
-        input.value = '';
-    });
+    if(document.querySelector('#url').files[0] && document.querySelector('#text').value){
+        toolbar.handlers.qImage(document.querySelector('#url').files[0], text = document.querySelector('#text').value)
+        form.style.display = 'none';
+        document.querySelectorAll('input').forEach(input => {
+            input.value = '';
+        });
+}
 };
 document.getElementById('toolbar').appendChild(button);
