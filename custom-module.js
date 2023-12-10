@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    var Block = Quill.import('blots/block/embed');
+    var Block = Quill.import('blots/block');
 
     class QImageBlot extends Block {
         static create(value) {
@@ -53,6 +53,9 @@ document.addEventListener("DOMContentLoaded", function() {
     inputButton.onclick = () => {
         toolbar.handlers.qImage()
         form.style.display = 'none';
+        document.querySelectorAll('input').forEach(input => {
+            input.value = '';
+        });
     };
     document.getElementById('toolbar').appendChild(button);
 });
