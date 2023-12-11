@@ -6,33 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Custom Quill Module</title>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-
+    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
     <script defer src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script defer src="custom-module.js"></script>
+    <script defer src="./script.js"></script>
     <style>
         #editor {
             height: 300px;
-        }
-
-        #toolbar {
-            height: 150px;
-        }
-
-        #customForm {
-            display: none;
         }
     </style>
 </head>
 
 <body>
-    <div id="customForm">
-        <input type="text" id="text" placeholder="Enter Image Text">
-        <input type="file" id="imageFile" accept="image/*">
-        <input type=" text" id="url" placeholder="Enter Image URL">
-        <button id="inputButton">Add</button>
+
+    <div id="contentDiv">
+        <div id="toolbar">
+            <button id="qImage">Add Image&Text</button>
+        </div>
+        <div id="editor"></div>
     </div>
-    <div id="toolbar"></div>
-    <div id="editor"></div>
 
 </body>
 
