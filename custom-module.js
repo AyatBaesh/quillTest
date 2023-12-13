@@ -9,7 +9,7 @@ class CustomModule {
     }
 
     initToolbarButton() {
-        const button = document.querySelector('#qImage');
+        const button = document.querySelector('.qImage');
         button.addEventListener('click',() => {
             this.form.style.display = 'block';
         })
@@ -40,12 +40,10 @@ class CustomModule {
     }
     
     insertQimageText(imageSrc, imageText) {
-        this.quill.insertEmbed(
-            this.quill.getSelection('true').index + 1, 
-            'qImage',
-            {image: imageSrc, text: imageText}
+        let range = this.quill.getSelection(true);
+        this.quill.insertEmbed(range.index, 'qImage', {image: imageSrc, text: imageText}
         );
-        this.quill.setSelection(this.quill.getSelection(true).index + 1);
+        this.quill.setSelection(range.index + 1);
         this.updateTitles();
     }
 
@@ -105,9 +103,10 @@ class CustomModule {
                 image = urlInput.value;
                 this.insertQimageText(image, text);
             }
-        this.form.querySelectorAll('input').forEach(inp => {inp.value = ''; inp.disabled = false});
-        this.form.style.display = 'none';
-        })
+            this.form.querySelectorAll('input').forEach(inp => {inp.value = ''; inp.disabled = false});
+            this.form.style.display = 'none';
+        });
+
         return formDiv;
 
     }
